@@ -29,29 +29,30 @@ function createMap(EarthquakeData){
     // Adding the open street map tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(myMap);
+    }).addTo(myMap);
 
     // Create a marker for each Earthquake object
     // Object in question is in: EarthquakeData.features
     // magnitude of an earthquake will be radius
     // depth of earthquake is color
+    EarthquakeData.features.forEach(earthQuake => {
+        
+        var quake_location = earthQuake.geometry.coordinates.slice(0,2);
 
-    var quake_location = EarthquakeData.features[0].geometry.coordinates.slice(0,2);
-
-    var magnitude = EarthquakeData.features[0].properties.mag
+        var magnitude = earthQuake.properties.mag;
     
-    var depth = EarthquakeData.features[0].geometry.coordinates[2]
+        var depth = earthQuake.geometry.coordinates[2];
 
-    // passing the magnitude as radius and depth as color for our circles
-    L.circle([35.75 , -39.46] , {
-        fillOpacity: .75 , 
-        color:'white' ,
-        fillcolor: 'purple' ,
-        radius: 500 , // The magnitudes need to be scaled using some function to make them visible
+        // passing the magnitude as radius and depth as color for our circles
+        L.circle(quake_location , {
+            fillOpacity: .75 , 
+            color: depth ,
+            fillcolor: 'green' ,
+            radius: magnitude , // The magnitudes need to be scaled using some function to make them visible
 
-    }).addTo(myMap)
+        }).addTo(myMap)
 
-
+});
 
 
 
