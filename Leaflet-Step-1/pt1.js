@@ -22,7 +22,7 @@ function createMap(EarthquakeData){
 
     // Generating the map object
     var myMap = L.map('map' , {
-        center: [35.75,-39.46] ,
+        center: [35.75,-39.46] , // North Atlantic ocean [35.75 ,-39.46]
         zoom: 3
     });
 
@@ -36,11 +36,20 @@ function createMap(EarthquakeData){
     // magnitude of an earthquake will be radius
     // depth of earthquake is color
 
+    var quake_location = EarthquakeData.features[0].geometry.coordinates.slice(0,2);
+
     var magnitude = EarthquakeData.features[0].properties.mag
     
     var depth = EarthquakeData.features[0].geometry.coordinates[2]
 
-    console.log(depth);
+    // passing the magnitude as radius and depth as color for our circles
+    L.circle([35.75 , -39.46] , {
+        fillOpacity: .75 , 
+        color:'white' ,
+        fillcolor: 'purple' ,
+        radius: 500 , // The magnitudes need to be scaled using some function to make them visible
+
+    }).addTo(myMap)
 
 
 
