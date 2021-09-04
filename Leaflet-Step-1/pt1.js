@@ -1,13 +1,8 @@
 // Earthquake visualization script
 
-// d3.json('https://earthquake.usgs.gov/fdsnws/event/1/query.geojson?starttime=2020-08-04%2000:00:00&endtime=2021-09-03%2023:59:59&maxlatitude=50&minlatitude=24.6&maxlongitude=-65&minlongitude=-125&minmagnitude=2.5&maxmagnitude=10&orderby=time')
-// .then(function(data){
-//     console.log(data);
-// })
 
-// storing API endpoint into variable
-var endpoint = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
-
+// storing API endpoint into variable {Earthquake last 30 days}
+ var endpoint = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson'
 // Request data from the endpoint
 d3.json(endpoint).then(function(data) {
     
@@ -36,9 +31,9 @@ function createMap(EarthquakeData){
         
         var quake_location = earthQuake.geometry.coordinates.slice(0,2);
 
-        var magnitude = earthQuake.properties.mag * 10000;
+        var magnitude = earthQuake.properties.mag * 10000 ;
     
-        var depth = earthQuake.geometry.coordinates[2] * 10000;
+        var depth = earthQuake.geometry.coordinates[2] *1000  ;
 
         // passing the magnitude as radius and depth as color for our circles
     quake_array.push(
@@ -51,7 +46,7 @@ function createMap(EarthquakeData){
             }));
     });
 
-
+    console.log(quake_array)
 
     // Adding the open street map tile layer
     var street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -73,7 +68,7 @@ function createMap(EarthquakeData){
 
     // Create an overlayMaps object to contain the earthquake layer
     var overlayMaps = {
-        'Earthquake': quake_layer
+        'Earthquakes': quake_layer
     };
 
 
@@ -94,10 +89,5 @@ function createMap(EarthquakeData){
 };
 
 // To do:
-// Find a way to get more earthquakes on your map {Larger data set} that focuse on a specific region like U.S West
-// Figure out how to get the color to change depending on depth
-// Work on the legend for the color range
-// custom query url from USGS:
-//https://earthquake.usgs.gov/fdsnws/event/1/query.geojson?starttime=2020-08-04%2000:00:00&endtime=2021-09-03%2023:59:59&maxlatitude=50&minlatitude=24.6&maxlongitude=-65&minlongitude=-125&minmagnitude=2.5&maxmagnitude=10&orderby=time
-// probably too many sample > 3000 yikes
+
 
