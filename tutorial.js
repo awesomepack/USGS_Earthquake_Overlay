@@ -2,37 +2,47 @@
 
 // creating mapOptions variable
 var mapOptions = {
-    center: [17.385044 , 78.486671] , 
-    zoom: 10
+    center: [36.778259, -119.417931] ,// lat and log for CA 
+    zoom: 6
 };
 
 // creating the mapObject
 var myMap = new L.map('map' , mapOptions);
 
 // creating the tile layer
-var layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-});
+var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+  });
+
 
 
 // Adding the tile to the map
-myMap.addLayer(layer);
+myMap.addLayer(topo);
 
-// defining the coordinates of the circle
-var circle_coordinates = [17.385044 , 78.488671];
+// defining a latlng object
+// Geo-coordinates of SF , LA , SD
+var dataObj = {
 
-// creating a circleOptions object
-var circleOptions = {
-    color: 'red' , 
-    fillcolor:'#f03' , 
-    fillOpacity:.5
+    'city': ['San Francisco' , 'Los Angeles' , 'San Diego'] ,
+    'coordinates': [[37.77986 , -122.42905] ,[34.05349 , -118.24532] , [32.71571 , -117.16472]] , 
+    'population': [250000 , 150000 , 30000]
 };
 
-// Creating the circle object
-var circle = L.circle(circle_coordinates , 50000 , circleOptions);
+// initializing the cities layer and circle array
+var circleArray = [];
 
+// creating city circles from dataObj
+for (var i = 0; i < dataObj.city.length; i++){
 
-// Adding circle to the map
-circle.addTo(myMap);
+    circleArray.push(
+        L.circle(dataObj.coordinates[i] , dataObj.population[i]))
+
+};
+
+// creating the cityLayer group
+var cityLayer = L.layerGroup(circleArray);
+
+// adding cityLayer to map
+cityLayer.addTo(myMap)
 
 
