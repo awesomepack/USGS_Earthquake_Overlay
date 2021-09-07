@@ -40,11 +40,11 @@ var circleArray = [];
 for (var i = 0; i < data.features.length; i++){
 
     circleArray.push(
-        L.circle([data.features[i].geometry.coordinates[0] ,data.features[i].geometry.coordinates[1]] , data.features[i].properties.mag , {
+        L.circle([data.features[i].geometry.coordinates[1] ,data.features[i].geometry.coordinates[0]] , setSize(data.features[i].properties.mag) , {
             color: setColor(data.features[i].geometry.coordinates[2]) , 
-            fillOpacity:.90
+            fillOpacity:.75
                 }
-            )
+            ).bindPopup('Location:' + data.features[i].properties.place)
         )
 
 };
@@ -61,7 +61,7 @@ legend.onAdd = function() {
     var div = L.DomUtil.create("div", "info legend"), 
     ratingLevels = [1, 2, 3, 4, 5, 6];
 
-    div.innerHTML += "<h3>Magnitude</h3>"
+    div.innerHTML += "<h3>Depth</h3>"
 
     for (var i = 0; i < ratingLevels.length; i++) {
         div.innerHTML +=
@@ -86,27 +86,36 @@ legend.addTo(myMap);
 // setColor Function
 // Color selection from colorbrewer2.org
 //https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=6
-function setColor(cool) {
+function setColor(depth) {
 
     switch(true){
 
-        case cool > 10:
+        case depth > 60:
             return '#253494';
         
-        case cool > 8:
+        case depth > 50:
             return '#2c7fb8';
         
-        case cool > 6:
+        case depth > 40:
             return '#41b6c4'
 
-        case cool > 4:
+        case depth > 30:
             return '#7fcdbb';
         
-        case cool > 2:
+        case depth > 20:
             return '#c7e9b4';
         
-        case cool > 0:
+        case depth < 20:
             return '#ffffcc';
 
     };
 };
+
+// setSize function
+function setSize(mag){
+
+    return mag * 10000
+
+
+
+}
