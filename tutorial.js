@@ -25,8 +25,8 @@ var dataObj = {
 
     'city': ['San Francisco' , 'Los Angeles' , 'San Diego'] ,
     'coordinates': [[37.77986 , -122.42905] ,[34.05349 , -118.24532] , [32.71571 , -117.16472]] , 
-    'population': [250000 , 150000 , 30000] , 
-    'awesomeness': [7 , 8 , 10]
+    'population': [250000 , 150000 , 100000] , 
+    'awesomeness': [250000 , 150001 , 10]
 };
 
 // initializing the cities layer and circle array
@@ -36,7 +36,12 @@ var circleArray = [];
 for (var i = 0; i < dataObj.city.length; i++){
 
     circleArray.push(
-        L.circle(dataObj.coordinates[i] , dataObj.population[i]))
+        L.circle(dataObj.coordinates[i] , dataObj.population[i] , {
+            color: setColor(dataObj.awesomeness[i]) , 
+            fillOpacity:.90
+                }
+            )
+        )
 
 };
 
@@ -45,5 +50,25 @@ var cityLayer = L.layerGroup(circleArray);
 
 // adding cityLayer to map
 cityLayer.addTo(myMap)
+
+
+// Fucntions
+
+// setColor Function
+function setColor(cool) {
+
+    switch(true){
+
+        case cool > 200000:
+            return '#2c7fb8';
+        
+        case cool > 150000:
+            return '#7fcdbb';
+        
+        case cool < 150000:
+            return '#edf8b1'
+
+    };
+};
 
 
