@@ -12,82 +12,101 @@ d3.json(endpoint).then(function(data) {
     // The structure of the coordinate data and depth
     console.log(data.features[0].geometry.coordinates.slice(0,2))
 
-    // calling the creatMap() function
-    createMap(data);
-});
+    console.log(data)
 
-// create the map function we call on the data
+    // creating mapOptions variable
+var mapOptions = {
+    center: [15.326572, -76.157227] ,// lat and log for Atlantic Ocean
+    zoom: 3
+};
 
-function createMap(EarthquakeData){
+// creating the mapObject
+var myMap = new L.map('map' , mapOptions);
 
-    // Create a marker for each Earthquake object
-    // Object in question is in: EarthquakeData.features
-    // magnitude of an earthquake will be radius
-    // depth of earthquake is color
-
-    var quake_array = [];
-
-    EarthquakeData.features.forEach(earthQuake => {
-        
-        var quake_location = earthQuake.geometry.coordinates.slice(0,2);
-
-        var magnitude = earthQuake.properties.mag * 10000 ;
-    
-        var depth = earthQuake.geometry.coordinates[2] *1000  ;
-
-        // passing the magnitude as radius and depth as color for our circles
-    quake_array.push(
-        L.circle(quake_location , {
-            fillOpacity: .75 , 
-            color: depth ,
-            fillcolor: 'blue' ,
-            radius: magnitude , // The magnitudes need to be scaled using some function to make them visible
-
-            }));
-    });
-
-    console.log(quake_array)
-
-    // Adding the open street map tile layer
-    var street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    })
-
-    // Adding the open street map topo layer
-    var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-    });
-
-    quake_layer = L.layerGroup(quake_array);
-
-    // Base map object to hold the street and topo layers
-    var baseMaps = {
-        "Street Map": street ,
-        "Topo Map": topo
-    };
-
-    // Create an overlayMaps object to contain the earthquake layer
-    var overlayMaps = {
-        'Earthquakes': quake_layer
-    };
+// creating the tile layer
+var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+  });
 
 
-    // Generating the map object
-    var myMap = L.map('map' , {
-        center: [35.75,-39.46] , // North Atlantic ocean [35.75 ,-39.46]
-        zoom: 3 , 
-        layers: [street , quake_layer]
-    });
 
-    // Create a layer control that contains our baseMaps and overlayMaps, and add them to the map.
-    L.control.layers(baseMaps , overlayMaps, { 
-        collapsed: false
-    }).addTo(myMap)
+// Adding the tile to the map
+myMap.addLayer(topo);
 
+// initializing the cities layer and circle array
+var circleArray = [];
 
+// creating earthquake circles from data
+for (var i = 0; i < data.features.length; i++){
+
+    circleArray.push(
+        L.circle([data.features[i].geometry.coordinates[0] ,data.features[i].geometry.coordinates[1]] , data.features[i].properties.mag , {
+            color: setColor(data.features[i].geometry.coordinates[2]) , 
+            fillOpacity:.90
+                }
+            )
+        )
 
 };
 
-// To do:
+// creating the cityLayer group
+var cityLayer = L.layerGroup(circleArray);
+
+// adding cityLayer to map
+cityLayer.addTo(myMap)
+
+// Set Up Legend
+var legend = L.control({ position: "bottomright" });
+legend.onAdd = function() {
+    var div = L.DomUtil.create("div", "info legend"), 
+    ratingLevels = [1, 2, 3, 4, 5, 6];
+
+    div.innerHTML += "<h3>Magnitude</h3>"
+
+    for (var i = 0; i < ratingLevels.length; i++) {
+        div.innerHTML +=
+            '<i style="background: ' + setColor(ratingLevels[i] + 1) + '"></i> ' +
+            ratingLevels[i] + (ratingLevels[i + 1] ? '&ndash;' + ratingLevels[i + 1] + '<br>' : '+');
+    }
+    return div;
+};
+// Add Legend to the Map
+legend.addTo(myMap);
 
 
+
+
+
+});
+
+
+
+// Fucntions
+
+// setColor Function
+// Color selection from colorbrewer2.org
+//https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=6
+function setColor(cool) {
+
+    switch(true){
+
+        case cool > 10:
+            return '#253494';
+        
+        case cool > 8:
+            return '#2c7fb8';
+        
+        case cool > 6:
+            return '#41b6c4'
+
+        case cool > 4:
+            return '#7fcdbb';
+        
+        case cool > 2:
+            return '#c7e9b4';
+        
+        case cool > 0:
+            return '#ffffcc';
+
+    };
+};
