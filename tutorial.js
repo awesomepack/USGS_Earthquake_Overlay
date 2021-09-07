@@ -25,7 +25,8 @@ var dataObj = {
 
     'city': ['San Francisco' , 'Los Angeles' , 'San Diego'] ,
     'coordinates': [[37.77986 , -122.42905] ,[34.05349 , -118.24532] , [32.71571 , -117.16472]] , 
-    'population': [250000 , 150000 , 30000]
+    'population': [250000 , 150000 , 30000] , 
+    'awesomeness': [7 , 8 , 10]
 };
 
 // initializing the cities layer and circle array
