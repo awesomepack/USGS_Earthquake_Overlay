@@ -44,7 +44,7 @@ for (var i = 0; i < data.features.length; i++){
             color: setColor(data.features[i].geometry.coordinates[2]) , 
             fillOpacity:.75
                 }
-            ).bindPopup('Location:' + data.features[i].properties.place)
+            ).bindPopup('Location: ' + data.features[i].properties.place) // Pop up with location
         )
 
 };
@@ -72,6 +72,9 @@ legend.onAdd = function() {
 };
 // Add Legend to the Map
 legend.addTo(myMap);
+
+// To Do:
+// Get color scale to show on legend
 
 
 
